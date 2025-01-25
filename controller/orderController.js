@@ -1,13 +1,13 @@
 const { Order, orderValidation } = require("../models/Order.js");
 const paymentCheck = require("../utils/paymentCheck.js");
 const mongoose = require("mongoose");
+const sentEmail = require("../utils/emailTransporter.js");
 
 function lengthAndDigitsCheck(str, length) {
-    const editedStr = str.trim().replaceAll(' ', '');
+    const editedStr = str.trim().replaceAll(" ", "");
     const reg = new RegExp(`\\d{${length}}`);
-    return editedStr.length === length && reg.test(editedStr)
+    return editedStr.length === length && reg.test(editedStr);
 }
-
 
 class orderController {
     createOrder = async (req, res) => {
@@ -56,7 +56,9 @@ class orderController {
     makePaymentById = async (req, res) => {
         try {
             const { id } = req.params;
-            const { number, exp, cvc } = req.body;
+            const { number, exp, cvc, email } = req.body;
+
+            console.log(email);
             // Проверка существования заказа
 
             const order = await Order.findById(id);
@@ -67,21 +69,25 @@ class orderController {
 
             // Проверка на оплаченный статус заказа
             if (isPayed) {
-                return res.status(200).json({ message: "Order has already been payed" });
+                return res
+                    .status(200)
+                    .json({ message: "Order has already been payed" });
             }
             const currentDate = new Date();
             const paymentTimeout = process.env.TIMEOUTPAYMENT * 1000;
 
             // Проверка на timeout
-            if ((currentDate - new Date(createdAt)) > paymentTimeout) {
+            if (currentDate - new Date(createdAt) > paymentTimeout) {
                 await Order.findByIdAndDelete(id);
                 return res.status(400).json({ message: "Order timed out" });
             }
 
             // Валидация
-            const {isValid, errors} = paymentCheck(number, exp, cvc);
+            const { isValid, errors } = paymentCheck(number, exp, cvc);
             if (!isValid) {
-                return res.status(422).json({ message: 'Payment data is not valid', errors})
+                return res
+                    .status(422)
+                    .json({ message: "Payment data is not valid", errors });
             }
 
             const updatedOrder = await Order.findByIdAndUpdate(
@@ -89,13 +95,27 @@ class orderController {
                 { isPayed: true },
                 { new: true }
             );
+
+            // if(isValidEmail(email)){
+            //     await sentEmail(....)
+            // }
+            if (email) {
+                const result = await sentEmail(
+                    "mcdicktop@gmail.com",
+                    email,
+                    "Example titile",
+                    "<p>Hello</p>"
+                );
+                console.log(order);
+                // res.status(200).json({ message: "Email was sent" });
+            }
+
             return res.status(200).json({
                 message: "Order was payed",
-                order: updatedOrder
+                order: updatedOrder,
             });
-
         } catch (e) {
-            console.error(e)
+            console.error(e);
             return res.status(500).json({ message: "Internal Server Error" });
         }
         // Если заказ оплачет, то сообщение об его оплаченном статусе

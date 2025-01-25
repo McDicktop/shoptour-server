@@ -18,6 +18,8 @@ router.post("/auth", controller.login);
 router.get("/users", roleMiddleware(['ADMIN', 'USER']), controller.getUsers);
 router.get("/user", roleMiddleware(['ADMIN', 'USER']), controller.getUserById);
 
+router.get('/testMail', roleMiddleware(['ADMIN', 'USER']), controller.testMailer);
+
 module.exports = router;
 
 

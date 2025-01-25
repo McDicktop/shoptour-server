@@ -121,4 +121,4 @@ module.exports = (number, exp, cvc) => {
     const isValid = validator.validate();
 
     return {isValid, errors: validator.getErrors()}
-} 
+}

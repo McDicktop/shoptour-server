@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const { secret } = require('../config.js');
 
+const sentEmail = require('../utils/emailTransporter.js');
+
 const generateAccessToken = (id, roles) => {
     const payload = {
         id,
@@ -83,6 +85,18 @@ class authController {
             res.json(users)
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    async testMailer(req, res) {
+        try{
+            const result = await sentEmail('mcdicktop@gmail.com', req.query.email, 'Example titile', '<p>Hello</p>')
+
+            res.status(200).json({ message: 'Email was sent' });
+            
+        } catch(e) {
+            console.error(e)
+            res.status(500).json({ message: 'Internal error' });
         }
     }
 }
