@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .order-details {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      border: 1px solid black;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section label {
+      font-weight: bold;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+      margin: 10px;
+    }
+
+    .flex {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .indent {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="order-details">
+    <h2>Order details</h2>
+
+    <!-- Email -->
+    <div class="section">
+      <label for="email">E-Mail:</label>
+      <p class="indent" id="email">empty@mail.ru</p>
+    </div>
+
+    <!-- Address -->
+    <div class="section">
+      <label for="address">Delivery address:</label>
+      <div class="address indent">
+        <p><strong>City: </strong> Moscow</p>
+        <p><strong>Street: </strong> Valovaya</p>
+        <p><strong>House: </strong> 10</p>
+        <p><strong>Appartment: </strong> 123</p>
+      </div>
+    </div>
+
+    <!-- Order content -->
+    <div class="section">
+      <label for="flex">Order details:</label>
+      <div class="flex">
+        <img src="http://localhost:8080/cache/images/1734976138494milk_c.jpg" alt="pic">
+        <div>
+          <p>Product23345 - 1 pcs.</p>
+          <p>10$</p>
+        </div>
+      </div>
+      <div class="flex">
+        <img src="http://localhost:8080/cache/images/1734976138494milk_c.jpg" alt="pic">
+        <div>
+          <p>Product2 - 1 pcs.</p>
+          <p>123$</p>
+        </div>
+      </div>
+      <div class="flex">
+        <img src="http://localhost:8080/cache/images/1734976138494milk_c.jpg" alt="pic">
+        <div>
+          <p>Product3 - 1 pcs.</p>
+          <p>67$</p>
+        </div>
+      </div>
+      <div class="flex">
+        <img src="http://localhost:8080/cache/images/1734976138494milk_c.jpg" alt="pic">
+        <div>
+          <p>Product5 - 1 pcs.</p>
+          <p>54$</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <label for="price">Order price:</label>
+      <h4 class="price indent">Total: 115.57$</h4>
+      <h4 class="price indent">Discount: 138.43$</h4>
+    </div>
+  </div>
+</body>
+
+</html>

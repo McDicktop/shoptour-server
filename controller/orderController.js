@@ -1,13 +1,9 @@
 const { Order, orderValidation } = require("../models/Order.js");
 const paymentCheck = require("../utils/paymentCheck.js");
 const mongoose = require("mongoose");
+const evalidator = require("email-validator");
 const sentEmail = require("../utils/emailTransporter.js");
-
-function lengthAndDigitsCheck(str, length) {
-    const editedStr = str.trim().replaceAll(" ", "");
-    const reg = new RegExp(`\\d{${length}}`);
-    return editedStr.length === length && reg.test(editedStr);
-}
+const emailCompose = require("../utils/emailCompose.js");
 
 class orderController {
     createOrder = async (req, res) => {
@@ -58,9 +54,7 @@ class orderController {
             const { id } = req.params;
             const { number, exp, cvc, email } = req.body;
 
-            console.log(email);
             // Проверка существования заказа
-
             const order = await Order.findById(id);
             if (!order) {
                 return res.status(404).send({ message: "Order not found!" });
@@ -96,22 +90,29 @@ class orderController {
                 { new: true }
             );
 
-            // if(isValidEmail(email)){
-            //     await sentEmail(....)
-            // }
-            if (email) {
-                const result = await sentEmail(
-                    "mcdicktop@gmail.com",
-                    email,
-                    "Example titile",
-                    "<p>Hello</p>"
-                );
-                console.log(order);
-                // res.status(200).json({ message: "Email was sent" });
+            //Если добавлена почта для отправки заказа
+            if (!email) {
+                return res.status(200).json({
+                    message: "Order payed",
+                    order: updatedOrder,
+                });
             }
 
+            if (!evalidator.validate(email)) {
+                return res
+                    .status(422)
+                    .json({ message: "e-mail is not valid" });
+            }
+
+            await sentEmail(
+                "mcdicktop@gmail.com",
+                email,
+                "Order details",
+                emailCompose(order)
+            );
+
             return res.status(200).json({
-                message: "Order was payed",
+                message: `Order payed, sent to ${email}`,
                 order: updatedOrder,
             });
         } catch (e) {

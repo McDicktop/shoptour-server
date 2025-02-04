@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-
 const pass = process.env.GMAIL_PASS;
 
 const transporter = nodemailer.createTransport({
@@ -20,7 +19,7 @@ async function sentEmail(from, to, subject, html) {
         html
     })
 
-    return {info};
+    return { info };
 }
 
 module.exports = sentEmail;
